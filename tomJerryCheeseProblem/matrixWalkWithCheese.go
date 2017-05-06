@@ -18,20 +18,48 @@ recursive till you reach last find location
 Step3 : find minimum path from last find location to Jerry position
 */
 
+const maxInt32 = 1<<31 - 1
+
 type points struct {
 	x, y int
 }
 
-const maxInt32 = 1<<31 - 1
+var visited [][]int
+
+func main() {
+	arr := [][]int{{0, 0, 0, 1, 2},
+		{0, 1, 0, 1, 0},
+		{1, 2, 0, 0, 0},
+		{2, 0, 0, 0, 1},
+		{0, 0, 0, 0, 0},
+	}
+
+	visited = make([][]int, 5)
+	for i := 0; i < len(visited); i++ {
+		visited[i] = make([]int, 5)
+	}
+	//Jerry Location :
+	x, y := 4, 2
+	fmt.Println("ShortestPath :", findMinPathToReachJerry(arr, x, y))
+}
+func visited_matrix_clean(visited [][]int) {
+	for i := 0; i < len(visited); i++ {
+		for j := 0; j < len(visited[0]); j++ {
+			visited[i][j] = 0
+		}
+	}
+}
 
 func findMinPathToReachJerry(matrix [][]int, x, y int) int {
 	m := len(matrix)
 	n := len(matrix[0])
 	var cheeseLoc = make([]points, 0)
 	var loc points
+	totalMinPath := 0
+	//Step1: Record all Cheese coordinates into list
 	for i := 0; i < m; i++ {
 		for j := 0; j < n; j++ {
-			if matrix[i][j] == '2' {
+			if matrix[i][j] == 2 {
 				loc.x = i
 				loc.y = j
 				cheeseLoc = append(cheeseLoc, loc)
@@ -39,57 +67,60 @@ func findMinPathToReachJerry(matrix [][]int, x, y int) int {
 
 		}
 	}
+	fmt.Println("Cheese List:", cheeseLoc)
+	//Step2 : Get shortest combination from all points
 	//Tom init position
 	start_x := 0
 	start_y := 0
-	totalMinPath := maxInt32
-	//At this stage , collected all cheese location in list
-	for len(cheseLoc) > 1 { //Walk all over coordinate and find minimum path from origin to one of remaining coordinate
+	for len(cheeseLoc) > 1 { //Walk all over coordinate and find minimum path from origin to one of remaining coordinate
 
 		minPath := maxInt32 //Init Value of MiniPath from origin
-		nextOrigin = points{0, 0}
+		nextOrigin := points{0, 0}
 		rmIndex := 0 //Remove CheeseLocation index which found to nearest to define origin point
-		for i := 0; i < len(cheseLoc); i++ {
+		for i := 0; i < len(cheeseLoc); i++ {
 			loc := cheeseLoc[i]
-			path := findMinPath(matrix, start_x, start_y, loc.x, loc.y)
-			if minPath < path {
+			visited_matrix_clean(visited)
+			path := findMinPath(matrix, start_x, start_y, loc.x, loc.y, visited)
+			if path < minPath {
 				nextOrigin.x = loc.x
 				nextOrigin.y = loc.y
 				rmIndex = i
+				minPath = path
 			}
 		}
 		//At this stage, Got nearest cheese location from define origin points
 		//Update new origin points and find nearest cheese from this new origin
 		start_x = nextOrigin.x
 		start_y = nextOrigin.y
-		cheeseLoc = append(cheese[0:i-1], cheese[i+1:]) //skip rmIndex
+		cheeseLoc = append(cheeseLoc[:rmIndex], cheeseLoc[rmIndex+1:]...) //skip rmIndex
 		totalMinPath += minPath
 	}
 	//At this stage , All cheese has been collected and their minMum path has been calculated
 	//Now find minMumPath to reach Jerry from last Location of cheese
-	totalMinPath += findMinPath(matrix, start_x, start_y, cheeseLoc[0].x, cheeseLoc[0].y)
+	visited_matrix_clean(visited)
+	totalMinPath += findMinPath(matrix, start_x, start_y, cheeseLoc[0].x, cheeseLoc[0].y, visited)
 	return totalMinPath
 }
-func findMinPath(matrix [][]int, origin_x, origin_y, x, y int) int {
+func findMinPath(matrix [][]int, x, y, target_x, target_y int, visited [][]int) int {
 	m := len(matrix)
 	n := len(matrix[0])
 
-	if origin_x == x && origin_y == y {
+	if target_x == x && target_y == y {
 		return 0
 	}
-	if x < 0 || x > m || y < 0 || y > n || matrix[x][y] == 1 {
+	if x < 0 || x > m-1 || y < 0 || y > n-1 || matrix[x][y] == 1 || visited[x][y] == 1 {
 		return maxInt32
 	}
-	matrix[x][y] = 1 //mark as visited
-	minPath = maxInt32
+	visited[x][y] = 1 //mark as visited
+	minPath := maxInt32
 	var kShift = []points{{1, 0}, {0, 1}, {-1, 0}, {0, -1}}
 	for i := 0; i < len(kShift); i++ { //DFS walk in all four directions
 		next_x := x + kShift[i].x
 		next_y := y + kShift[i].y
-		path = 1 + findMinPath(matrix, origin_x, origin_y, next_x, next_y)
+		path := 1 + findMinPath(matrix, next_x, next_y, target_x, target_y, visited)
 		if path < minPath {
 			minPath = path
 		}
 	}
-	return path
+	return minPath
 }
