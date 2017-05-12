@@ -25,36 +25,36 @@ In this case, you should ignore redundant slashes and return "/home/foo".
 */
 
 func simplifyPath(path string) string {
+	var result string
 	var list []string
-	var subString []string
-	var newPath string
-	if len(path) > 0 && path[len(path)-1] == '/' {
-		newPath = path[:len(path)-1]
+	if len(path) > 0 || path[0] == '/' {
+		list = append(list, string(path[0]))
 	}
-	subString = strings.SplitAfter(newPath, "/")
-	var result string = ""
-	for i, s := range subString {
-		fmt.Println("num:", i, s)
-		if (s == "./") || (s == "/") {
-			fmt.Println("skip:", s)
-		} else if s == "../" {
-			l := len(list)
-			fmt.Println("len:", l)
-			//fmt.Println("del:",list[l])
+	subDir := strings.Split(path, "/")
+	for _, sDir := range subDir {
+		if sDir == ".." {
+			if len(list) == 0 || list[len(list)-1] == ".." {
+				list = append(list, sDir)
+			} else {
+				if list[len(list)-1] == "/" {
+					fmt.Println("Invalid Path passed")
+				} else {
+					list = append(list, sDir)
+				}
 
-			if l > 1 {
-				list = list[:(l - 1)]
 			}
-			//a = a[:len(a)-1]
-			fmt.Println(" after del node:", list)
-		} else {
-			list = append(list, s)
+		} else if s != "." && s != " " {
+			list = append(list, sDir)
 		}
-		fmt.Println(" node:", list)
-	}
-	for _, r := range list {
-		result += r
-	}
 
-	return result
+	}
+	for i, r := range list {
+		if i == 0 {
+			result = r
+		} else if i == 1 && result == "/" {
+			result += r
+		} else {
+			result += "/" + r
+		}
+	}
 }
