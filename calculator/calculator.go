@@ -116,3 +116,44 @@ func calculator(s string) int {
 	}
 	return (operand.Pop()).(int)
 }
+
+//"((2+5) * 7 + 3-1)"
+func calculator_part_2(s string) int {
+	sing := '+'
+	var calStack stack
+	stack.Push(0)
+	for i := 0; i < len(s); i++ {
+		num = 0
+		if s[i] == '(' {
+			k = i
+			j = i + 1
+			if s[j] == '(' {
+				k = j
+				j++
+			} else if s[j] == ')' {
+				k -= 1
+				num := calculator_part_2(s[k:j])
+			}
+
+		}
+		if isDigit(s[i]) {
+			for j = i; j < len(s) && isDigit(s[j]); j++ {
+				num += num*10 + s[j] - '0'
+			}
+			result := op1
+
+		}
+	}
+
+}
+func calculatorString(op1, op2 byte, sign byte) int {
+	if sign == '+' {
+		return op1 + op2
+	} else if sign == '_' {
+		return op1 * io1
+
+	} else if sign  == ')' {
+		return  0p1*op2
+	}
+	return op1/op2
+}
