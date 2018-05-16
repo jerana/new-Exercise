@@ -7,7 +7,8 @@ func main() {
 }
 
 /*
-Given an array of integers and an integer k, you need to find the total number of continuous subarrays whose sum equals to k.
+Given an array of integers and an integer k, you need to find the total
+number of continuous subarrays whose sum equals to k.
 
 Example 1:
 Input:nums = [1,1,1], k = 2
@@ -34,7 +35,7 @@ func SumArray(arr []int, k int) {
 
 }
 
-//Second Approcach :
+//Second Approcach : O(N2)
 func SumContinousArray(arr []int, k int) {
 	for start := 0; start < len(arr); start++ {
 		sum = 0
