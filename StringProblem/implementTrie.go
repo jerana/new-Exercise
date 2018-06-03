@@ -29,7 +29,6 @@ type Trie struct {
 func Constructor() Trie {
 	var root Trie
 	root.hMap = make(map[byte]*Trie, 0)
-	fmt.Println("Constructor Init", root)
 	return root
 }
 
