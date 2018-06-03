@@ -45,9 +45,9 @@ func (this *Trie) Insert(word string) {
 	var key *Trie
 	for _, w := range word {
 		if key, ok = node.hMap[byte(w)]; !ok {
-			n := allocTrieNode()
-			node.hMap[byte(w)] = n
-			node = n
+			key := allocTrieNode()
+			node.hMap[byte(w)] = key
+			node = key
 		} else {
 			node = key
 		}
