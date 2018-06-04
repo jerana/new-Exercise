@@ -18,6 +18,7 @@ Output:
   ["a","z"]
 ]
 */
+//Use Shift value of each string and record them into hashMap
 func groupStrings(strings []string) [][]string {
 	hMap := make(map[byte][]string, 0)
 	result := [][]string{}
@@ -31,14 +32,16 @@ func groupStrings(strings []string) [][]string {
 	}
 	return result
 }
+
+//Function to cal string shift value
 func shift(str string) byte {
-	var t byte
+	var t string
 	for i := 1; i < len(str); i++ {
-		diff := str[i] - str[i-1]
+		diff := int(str[i]) - int(str[i-1])
 		if diff < 0 {
 			diff += 26
 		}
-		t += ('a') + diff + (',')
+		t += strconv.Itoa(diff) + ","
 	}
 	return t
 }
